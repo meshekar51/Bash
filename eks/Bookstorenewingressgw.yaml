@@ -1,0 +1,189 @@
+# =============================================================================
+# Real Bookinfo: the 4 services that make the product page render.
+# Replaces the nginx placeholders for details, ratings, reviews, productpage
+# with the genuine Bookinfo images on port 9080.
+#
+# productpage (UI) calls -> details, reviews ; reviews(v2/v3) calls -> ratings
+# (reviews-v1 used here shows no star ratings - that's normal for v1)
+#
+# Apply:  kubectl apply -f bookinfo-real.yaml
+# =============================================================================
+
+# ---- details ----------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: details
+  namespace: default
+  labels: { app: details }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: details }
+  template:
+    metadata:
+      labels: { app: details }
+    spec:
+      containers:
+        - name: details
+          image: registry.istio.io/release/examples-bookinfo-details-v1:1.20.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: details
+  namespace: default
+  labels: { app: details, service: details }
+spec:
+  selector: { app: details }
+  ports:
+    - port: 9080
+      name: http
+---
+# ---- ratings ----------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratings
+  namespace: default
+  labels: { app: ratings }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: ratings }
+  template:
+    metadata:
+      labels: { app: ratings }
+    spec:
+      containers:
+        - name: ratings
+          image: registry.istio.io/release/examples-bookinfo-ratings-v1:1.20.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratings
+  namespace: default
+  labels: { app: ratings, service: ratings }
+spec:
+  selector: { app: ratings }
+  ports:
+    - port: 9080
+      name: http
+---
+# ---- reviews ----------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews
+  namespace: default
+  labels: { app: reviews }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: reviews }
+  template:
+    metadata:
+      labels: { app: reviews }
+    spec:
+      containers:
+        - name: reviews
+          image: registry.istio.io/release/examples-bookinfo-reviews-v1:1.20.3
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: LOG_DIR
+              value: "/tmp/logs"
+          ports:
+            - containerPort: 9080
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: wlp-output
+              mountPath: /opt/ibm/wlp/output
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: wlp-output
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviews
+  namespace: default
+  labels: { app: reviews, service: reviews }
+spec:
+  selector: { app: reviews }
+  ports:
+    - port: 9080
+      name: http
+---
+# ---- productpage (the UI you hit in the browser) ----------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage
+  namespace: default
+  labels: { app: productpage }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: productpage }
+  template:
+    metadata:
+      labels: { app: productpage }
+    spec:
+      containers:
+        - name: productpage
+          image: registry.istio.io/release/examples-bookinfo-productpage-v1:1.20.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9080
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productpage
+  namespace: default
+  labels: { app: productpage, service: productpage }
+spec:
+  selector: { app: productpage }
+  ports:
+    - port: 9080
+      name: http
+---
+# ---- route the gateway to productpage on 9080 -------------------------------
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: bookinfo
+  namespace: default
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - bookinfo-gateway
+  http:
+    - match:
+        - uri: { exact: /productpage }
+        - uri: { prefix: /static }
+        - uri: { exact: /login }
+        - uri: { exact: /logout }
+        - uri: { prefix: /api/v1/products }
+      route:
+        - destination:
+            host: productpage
+            port:
+              number: 9080

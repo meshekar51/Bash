@@ -1,0 +1,350 @@
+# =============================================================================
+# 10 microservices, simplified, all in the DEFAULT namespace.
+# Each microservice = 1 Deployment (1 replica) + 1 Service.
+#
+# Based on Istio's Bookinfo (details, ratings, reviews, productpage) and
+# extended with 6 more bookstore services to reach 10.
+#
+# Simplifications vs the original Bookinfo file:
+#   - no ServiceAccounts
+#   - reviews collapsed to a single version (original had v1/v2/v3)
+#   - no volumes / Prometheus annotations
+#
+# IMAGE NOTE: a placeholder image (nginx:alpine) is used for every service so
+# the whole file runs identically out of the box. Swap in real images per
+# service when you have them. The 4 Bookinfo services have real images you can
+# use instead (commented next to each).
+#
+# Apply:   kubectl apply -f bookstore-10-microservices.yaml
+# Verify:  kubectl get deploy,svc
+# =============================================================================
+
+# ---- 1) productpage (frontend) ----------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage
+  namespace: default
+  labels: { app: productpage }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: productpage }
+  template:
+    metadata:
+      labels: { app: productpage }
+    spec:
+      containers:
+        - name: productpage
+          image: nginx:alpine   # real: registry.istio.io/release/examples-bookinfo-productpage-v1:1.20.3 (port 9080)
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productpage
+  namespace: default
+  labels: { app: productpage }
+spec:
+  selector: { app: productpage }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 2) details --------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: details
+  namespace: default
+  labels: { app: details }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: details }
+  template:
+    metadata:
+      labels: { app: details }
+    spec:
+      containers:
+        - name: details
+          image: nginx:alpine   # real: registry.istio.io/release/examples-bookinfo-details-v1:1.20.3 (port 9080)
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: details
+  namespace: default
+  labels: { app: details }
+spec:
+  selector: { app: details }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 3) reviews --------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews
+  namespace: default
+  labels: { app: reviews }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: reviews }
+  template:
+    metadata:
+      labels: { app: reviews }
+    spec:
+      containers:
+        - name: reviews
+          image: nginx:alpine   # real: registry.istio.io/release/examples-bookinfo-reviews-v1:1.20.3 (port 9080)
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviews
+  namespace: default
+  labels: { app: reviews }
+spec:
+  selector: { app: reviews }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 4) ratings --------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratings
+  namespace: default
+  labels: { app: ratings }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: ratings }
+  template:
+    metadata:
+      labels: { app: ratings }
+    spec:
+      containers:
+        - name: ratings
+          image: nginx:alpine   # real: registry.istio.io/release/examples-bookinfo-ratings-v1:1.20.3 (port 9080)
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratings
+  namespace: default
+  labels: { app: ratings }
+spec:
+  selector: { app: ratings }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 5) catalog --------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog
+  namespace: default
+  labels: { app: catalog }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: catalog }
+  template:
+    metadata:
+      labels: { app: catalog }
+    spec:
+      containers:
+        - name: catalog
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog
+  namespace: default
+  labels: { app: catalog }
+spec:
+  selector: { app: catalog }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 6) cart -----------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart
+  namespace: default
+  labels: { app: cart }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: cart }
+  template:
+    metadata:
+      labels: { app: cart }
+    spec:
+      containers:
+        - name: cart
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cart
+  namespace: default
+  labels: { app: cart }
+spec:
+  selector: { app: cart }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 7) orders ---------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders
+  namespace: default
+  labels: { app: orders }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: orders }
+  template:
+    metadata:
+      labels: { app: orders }
+    spec:
+      containers:
+        - name: orders
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders
+  namespace: default
+  labels: { app: orders }
+spec:
+  selector: { app: orders }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 8) payments -------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments
+  namespace: default
+  labels: { app: payments }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: payments }
+  template:
+    metadata:
+      labels: { app: payments }
+    spec:
+      containers:
+        - name: payments
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments
+  namespace: default
+  labels: { app: payments }
+spec:
+  selector: { app: payments }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 9) inventory ------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory
+  namespace: default
+  labels: { app: inventory }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: inventory }
+  template:
+    metadata:
+      labels: { app: inventory }
+    spec:
+      containers:
+        - name: inventory
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory
+  namespace: default
+  labels: { app: inventory }
+spec:
+  selector: { app: inventory }
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# ---- 10) recommendations -----------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendations
+  namespace: default
+  labels: { app: recommendations }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: recommendations }
+  template:
+    metadata:
+      labels: { app: recommendations }
+    spec:
+      containers:
+        - name: recommendations
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendations
+  namespace: default
+  labels: { app: recommendations }
+spec:
+  selector: { app: recommendations }
+  ports:
+    - port: 80
+      targetPort: 80
