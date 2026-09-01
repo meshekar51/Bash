@@ -1,0 +1,23 @@
+# Editor / swap files
+*.swp
+*.swo
+*.swn
+*~
+.*.swp
+
+# Script output
+chandra.txt
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local kube/secret material — never commit these
+kubeconfig
+*.kubeconfig
+.env
+*.pem
+*.key
