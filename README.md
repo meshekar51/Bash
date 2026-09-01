@@ -7,7 +7,8 @@
 
 ## Overview
 
-A learning repository, not a product. It holds the scripts written while working
+A learning repository, not a product. The material is self-taught practice rather
+than coursework. It holds the scripts written while working
 through Bash fundamentals — testing for files, branching on the result, logging both
 outcomes, and writing operations that are safe to run twice — alongside
 `Daily_Commands.md`, a cheat sheet of the Linux commands that come up daily in
@@ -48,7 +49,6 @@ flowchart TD
 | `conditions1.sh` | Adds a third check that extracts the nameserver IP with `awk`. | **Broken** — see [Known issues](#known-issues) |
 | `conditions12.sh` | The corrected `conditions1.sh`. All three checks parse and run. | Runs |
 | `Idempotency.sh` | Creates `/etc/app` only if it is not already a directory. | Runs (needs root) |
-| `bash commands.sh` | — | **Empty (0 bytes)** |
 | `Daily_Commands.md` | Linux command reference. | Reference |
 
 ### The shared pattern: test, branch, log
@@ -252,7 +252,6 @@ No `.env` file. Both values are set inline at the top of the scripts that use th
 ├── conditions1.sh       # adds awk IP extraction — has a syntax error
 ├── conditions12.sh      # the corrected version of conditions1.sh
 ├── Idempotency.sh       # create /etc/app only if absent
-├── bash commands.sh     # empty
 └── eks/                 # Kubernetes manifests — not documented yet
 ```
 
@@ -275,8 +274,6 @@ repository these are the material.
 - **`conditions1.sh:19`** — unterminated single quote in `awk '{print $2}`. `bash -n`
   reports *unexpected EOF while looking for matching `'`*. `conditions12.sh` is the
   corrected form; diffing the two is the exercise.
-- **`bash commands.sh`** — empty, and the space in the filename means it has to be
-  quoted everywhere it is referenced.
 - **`Daily_Commands.md:6`** — `PWD` is the shell variable. The command is lowercase
   `pwd`.
 - **`Daily_Commands.md:39,46`** — `chmod 644 -R /app/folder` strips the execute bit
@@ -285,8 +282,6 @@ repository these are the material.
 - **`Idempotency.sh:3`** — `for path in $DIR` loops over a single-valued variable. The
   loop does nothing a plain `if` would not, unless `DIR` is later extended to a list.
 
-<!-- TODO: which course or training these exercises came from -->
-<!-- TODO: confirm whether "bash commands.sh" is an intended placeholder or should be removed -->
 
 ## Contributing
 
