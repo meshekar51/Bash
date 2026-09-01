@@ -289,7 +289,6 @@ repository these are the material.
 
 <!-- TODO: which course or training these exercises came from -->
 <!-- TODO: confirm whether "bash commands.sh" is an intended placeholder or should be removed -->
-<!-- TODO: no LICENSE file present — choose one before others reuse this -->
 
 ## Contributing
 
@@ -298,9 +297,7 @@ issue or pull request is welcome — [Known issues](#known-issues) is the place 
 
 ## License
 
-<!-- TODO: no LICENSE file present -->
-No license file is present, so default copyright applies and no reuse rights are
-granted.
+Released under the [MIT License](LICENSE).
 
 ## Contact
 
