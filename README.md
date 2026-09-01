@@ -19,8 +19,8 @@ ways, and comparing them is the point. Where one of them is broken, it is left b
 and [documented](#known-issues) rather than quietly fixed, because the difference
 between `conditions1.sh` and `conditions12.sh` *is* the lesson.
 
-> The repository also contains an `eks/` directory of Kubernetes manifests. That work
-> is not documented here yet.
+> The Kubernetes manifests that used to live in `eks/` have moved to
+> [meshekar51/Aws](https://github.com/meshekar51/Aws).
 
 ## What's in the repo
 
@@ -251,8 +251,7 @@ No `.env` file. Both values are set inline at the top of the scripts that use th
 ├── condition.sh         # DNS checks — tab-indented, mixed logging styles
 ├── conditions1.sh       # adds awk IP extraction — has a syntax error
 ├── conditions12.sh      # the corrected version of conditions1.sh
-├── Idempotency.sh       # create /etc/app only if absent
-└── eks/                 # Kubernetes manifests — not documented yet
+└── Idempotency.sh       # create /etc/app only if absent
 ```
 
 ## Testing
