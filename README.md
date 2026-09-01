@@ -277,8 +277,6 @@ repository these are the material.
   corrected form; diffing the two is the exercise.
 - **`bash commands.sh`** — empty, and the space in the filename means it has to be
   quoted everywhere it is referenced.
-- **`.condition.sh.swp`** — a 12 KB Vim swap file was committed. It is editor state,
-  not source. Now covered by `.gitignore`, but still tracked from an earlier commit.
 - **`Daily_Commands.md:6`** — `PWD` is the shell variable. The command is lowercase
   `pwd`.
 - **`Daily_Commands.md:39,46`** — `chmod 644 -R /app/folder` strips the execute bit
